@@ -1,9 +1,10 @@
 package com.codoacodo.vuelosapi.services;
 
-import com.codoacodo.vuelosapi.configuration.FlightConfiguration;
+import com.codoacodo.vuelosapi.models.Company;
 import com.codoacodo.vuelosapi.models.Dolar;
 import com.codoacodo.vuelosapi.models.Flight;
 import com.codoacodo.vuelosapi.models.FlightDto;
+import com.codoacodo.vuelosapi.repository.CompanyRepository;
 import com.codoacodo.vuelosapi.repository.FlightRepository;
 import com.codoacodo.vuelosapi.utils.FlightUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +23,27 @@ public class FlightService {
     FlightUtils flightUtils;
 
     @Autowired
-    FlightConfiguration flightConfiguration;
+    CompanyRepository companyRepository;
 
     public List<FlightDto> findAll() {
-        return flightRepository.findAll().stream()
+        List<Flight> flightList = flightRepository.findAll();
+        return flightList.stream()
                 .map(flight -> flightUtils.flightMapper(flight,getDolar()))
                 .collect(Collectors.toList());
     }
 
-    public void createFlight(Flight flight) {
-        flightRepository.save(flight);
+//    public List<FlightDto> findAll() {
+//        double dolarPrice = getDolar();
+//        List<Flight> flights = flightRepository.findAll();
+//        return flightUtils.flightMapper(flights,dolarPrice);
+//    }
+
+    public Flight createFlight(Flight flight, Long companyId) {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new IllegalArgumentException("Company not found"));
+
+        flight.setCompany(company);
+        return flightRepository.save(flight);
     }
     public Optional<Flight> findById(Long id) {
         return flightRepository.findById(id);
@@ -59,11 +71,11 @@ public class FlightService {
         return flightUtils.detectOffers(flights, offerPrice);
     }
     private double getDolar() {
-        Dolar dolar = flightConfiguration.fetchDolar();
+        Dolar dolar = flightUtils.fetchDolar();
         return dolar.getPromedio();
     }
 
-    public List<Dolar> getAllDolars() {
-        return List.of(flightConfiguration.fetchAllDolars());
-    }
+//    public List<Dolar> getAllDolars() {
+//        return List.of(flightUtils.fetchAllDolars());
+//    }
 }
