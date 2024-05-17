@@ -32,7 +32,7 @@ public class FlightService {
                 .collect(Collectors.toList());
     }
 
-//    public List<FlightDto> findAll() {
+//    public   findAll() {
 //        double dolarPrice = getDolar();
 //        List<Flight> flights = flightRepository.findAll();
 //        return flightUtils.flightMapper(flights,dolarPrice);
