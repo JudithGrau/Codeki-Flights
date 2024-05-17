@@ -29,17 +29,17 @@ public class CompanyController {
     }
 
     @PostMapping("/add")
-    public void createFlight(@RequestBody Company company) {
+    public void createCompany(@RequestBody Company company) {
         companyService.createCompany(company);
     }
 
     @GetMapping("/{id}")
-    public Company findFlightById(@PathVariable Long id) {
+    public Company findCompanyById(@PathVariable Long id) {
         return companyService.findById(id);
     }
 
     @DeleteMapping("/delete/{id}")
-    public String deleteFlight(@PathVariable Long id) {
+    public String deleteCompany(@PathVariable Long id) {
 
         try {
             companyService.deleteCompany(id);
